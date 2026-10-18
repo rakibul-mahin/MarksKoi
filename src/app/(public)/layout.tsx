@@ -12,8 +12,16 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       <main id="main" className="flex-1">
         {children}
       </main>
-      <footer className="mx-auto w-full max-w-6xl px-4 py-8 text-xs text-muted-foreground sm:px-6">
-        MarksKoi? · Developed and Maintained by Mohammad Rakibul Hasan Mahin [RKBM]
+      <footer className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-8 text-xs text-muted-foreground sm:px-6">
+        <span>MarksKoi? · Developed and Maintained by Mohammad Rakibul Hasan Mahin [RKBM]</span>
+        <nav aria-label="Legal" className="flex gap-4">
+          <Link href="/privacy" className="hover:text-foreground hover:underline">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-foreground hover:underline">
+            Terms
+          </Link>
+        </nav>
       </footer>
     </div>
   );
