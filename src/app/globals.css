@@ -1,0 +1,297 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * SyncScore "ledger" design tokens.
+ * Paper: cool green-grey ledger stock · Ink: blue-black · Primary: spruce ·
+ * Signature: marker-yellow highlight behind a student's own score.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-data);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-highlight: var(--highlight);
+  --color-highlight-ink: var(--highlight-ink);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-rule: var(--rule);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.55rem;
+  --background: #f5f7f6;
+  --foreground: #1c2333;
+  --card: #ffffff;
+  --card-foreground: #1c2333;
+  --popover: #ffffff;
+  --popover-foreground: #1c2333;
+  --primary: #155e4b;
+  --primary-foreground: #f2fbf7;
+  --secondary: #e8eeeb;
+  --secondary-foreground: #1c2333;
+  --muted: #edf1ef;
+  --muted-foreground: #556070;
+  --accent: #e2ede8;
+  --accent-foreground: #0f4637;
+  --destructive: #b93a26;
+  --border: #dbe3df;
+  --input: #cbd5d0;
+  --ring: #1e7a62;
+  --rule: #e4eae7;
+  --highlight: #ffe45c;
+  --highlight-ink: #2e2700;
+  --success: #17704f;
+  --success-soft: #e1f3ea;
+  --warning: #8a5300;
+  --warning-soft: #fff3d4;
+  --danger-soft: #fbe7e3;
+  --info: #2a5596;
+  --info-soft: #e5edf9;
+  --chart-1: #155e4b;
+  --chart-2: #2a5596;
+  --chart-3: #8a5300;
+  --chart-4: #b93a26;
+  --chart-5: #556070;
+  --sidebar: #eef2f0;
+  --sidebar-foreground: #1c2333;
+  --sidebar-primary: #155e4b;
+  --sidebar-primary-foreground: #f2fbf7;
+  --sidebar-accent: #e0e9e4;
+  --sidebar-accent-foreground: #0f4637;
+  --sidebar-border: #dbe3df;
+  --sidebar-ring: #1e7a62;
+}
+
+.dark {
+  --background: #0e1412;
+  --foreground: #e6ede9;
+  --card: #141c19;
+  --card-foreground: #e6ede9;
+  --popover: #17201c;
+  --popover-foreground: #e6ede9;
+  --primary: #5cc9a4;
+  --primary-foreground: #05231a;
+  --secondary: #1c2622;
+  --secondary-foreground: #e6ede9;
+  --muted: #19231f;
+  --muted-foreground: #9aa8a1;
+  --accent: #1d2b26;
+  --accent-foreground: #cfefe2;
+  --destructive: #f07a63;
+  --border: #26332e;
+  --input: #33433c;
+  --ring: #5cc9a4;
+  --rule: #1f2a26;
+  --highlight: #8f7a12;
+  --highlight-ink: #fff8cf;
+  --success: #6fd3a8;
+  --success-soft: #11302a;
+  --warning: #f0bf5a;
+  --warning-soft: #33280f;
+  --danger-soft: #3a1a14;
+  --info: #8fb3ef;
+  --info-soft: #172438;
+  --chart-1: #5cc9a4;
+  --chart-2: #8fb3ef;
+  --chart-3: #f0bf5a;
+  --chart-4: #f07a63;
+  --chart-5: #9aa8a1;
+  --sidebar: #111916;
+  --sidebar-foreground: #e6ede9;
+  --sidebar-primary: #5cc9a4;
+  --sidebar-primary-foreground: #05231a;
+  --sidebar-accent: #1b2722;
+  --sidebar-accent-foreground: #cfefe2;
+  --sidebar-border: #22302a;
+  --sidebar-ring: #5cc9a4;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--highlight) 70%, transparent);
+    color: var(--highlight-ink);
+  }
+}
+
+@layer components {
+  /* Scores, ids and timestamps line up in columns. */
+  .tabular {
+    font-family: var(--font-data), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* The signature: a marker swipe behind the student's own mark. */
+  .highlighter {
+    position: relative;
+    isolation: isolate;
+    padding-inline: 0.3em;
+    margin-inline: -0.3em;
+  }
+  .highlighter::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0.18em -0.05em 0.08em -0.05em;
+    border-radius: 0.2em 0.35em 0.25em 0.4em / 0.4em 0.25em 0.35em 0.2em;
+    background: linear-gradient(100deg, transparent 0, var(--highlight) 0.25em, var(--highlight) calc(100% - 0.2em), transparent 100%);
+    opacity: 0.85;
+    transform: rotate(-1.2deg) scaleX(var(--swipe, 1));
+    transform-origin: left center;
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dark .highlighter::before {
+    opacity: 0.55;
+  }
+  .highlighter[data-swipe="pending"]::before {
+    --swipe: 0;
+  }
+
+  /* Marksheet dotted leader between an assessment name and its mark. */
+  .leader {
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    align-self: end;
+    margin-bottom: 0.4em;
+    border-bottom: 1.5px dotted color-mix(in oklab, var(--muted-foreground) 45%, transparent);
+  }
+
+  /* A torn-off block of ruled note paper, taped down (landing page tagline). */
+  .note-paper {
+    --note-line: 1.65rem;
+    position: relative;
+    padding: calc(var(--note-line) * 0.55) 0.75rem calc(var(--note-line) * 0.45) 1.15rem;
+    border-radius: 2px 2px 6px 3px;
+    background-color: var(--card);
+    background-image:
+      linear-gradient(to right, transparent 0.6rem, color-mix(in oklab, var(--destructive) 35%, transparent) 0.6rem, color-mix(in oklab, var(--destructive) 35%, transparent) calc(0.6rem + 1px), transparent calc(0.6rem + 1px)),
+      repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--note-line) - 1px), color-mix(in oklab, var(--info) 22%, transparent) calc(var(--note-line) - 1px), color-mix(in oklab, var(--info) 22%, transparent) var(--note-line));
+    background-position: 0 0, 0 calc(var(--note-line) * 0.3);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 10px 22px -14px rgba(21, 94, 75, 0.45);
+    outline: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .note-paper::before {
+    content: "";
+    position: absolute;
+    top: -0.55rem;
+    left: 50%;
+    width: 2.75rem;
+    height: 1.1rem;
+    translate: -50% 0;
+    rotate: calc(var(--tilt, 0deg) * -2);
+    background: color-mix(in oklab, var(--highlight) 55%, transparent);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+  .dark .note-paper::before {
+    background: color-mix(in oklab, #ffe45c 38%, transparent);
+  }
+  /* Notes use a true marker yellow in both themes (the dark theme's score highlight is muted). */
+  .note-paper .highlighter {
+    color: #2e2700;
+  }
+  .note-paper .highlighter::before,
+  .dark .note-paper .highlighter::before {
+    background: linear-gradient(100deg, transparent 0, #ffe45c 0.25em, #ffe45c calc(100% - 0.2em), transparent 100%);
+    opacity: 0.92;
+  }
+  .note-paper:hover {
+    transform: rotate(0deg) translateY(-2px);
+  }
+
+  /* Faint ledger ruling used on a few surfaces (sign-in, empty states). */
+  .ledger-ruling {
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--rule) 31px, var(--rule) 32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlighter::before,
+  .note-paper {
+    transition: none;
+  }
+  .highlighter[data-swipe="pending"]::before {
+    --swipe: 1;
+  }
+}
+
+/* Indeterminate progress for long-running actions (no invented percentages). */
+@keyframes indeterminate {
+  0% { transform: translateX(-100%) scaleX(0.4); }
+  50% { transform: translateX(10%) scaleX(0.6); }
+  100% { transform: translateX(110%) scaleX(0.4); }
+}
+.progress-indeterminate {
+  animation: indeterminate 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-indeterminate { animation: none; transform: none; opacity: 0.6; }
+}

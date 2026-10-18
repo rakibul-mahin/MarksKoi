@@ -1,0 +1,11 @@
+# Netlify auto-detects Next.js and uses its OpenNext-based adapter (@netlify/plugin-nextjs).
+[build]
+  command = "pnpm prisma generate && pnpm build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PRISMA_HIDE_UPDATE_MESSAGE = "1"
+
+[functions]
+  directory = "netlify/functions"

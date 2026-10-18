@@ -1,0 +1,630 @@
+// SyncScore data model.
+// Conventions: UUID primary keys, snake_case tables/columns, timestamps in UTC (timestamptz).
+// Academic records are never hard-deleted by application code: offerings are archived and
+// enrollments are marked REMOVED so historical marks and published snapshots stay intact.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  engineType   = "client"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────── Enums ───────────────────────────────
+
+enum Role {
+  STUDENT
+  FACULTY
+  ADMIN
+}
+
+enum ProfileStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum Season {
+  SPRING
+  SUMMER
+  FALL
+}
+
+enum OfferingStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum FacultyRole {
+  OWNER
+  INSTRUCTOR
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  REMOVED
+}
+
+enum SourceStatus {
+  UNVERIFIED
+  CONNECTED
+  ERROR
+}
+
+enum AssessmentKind {
+  REGULAR
+  OFFICIAL_TOTAL
+  OFFICIAL_GRADE
+}
+
+enum ValueType {
+  NUMERIC
+  TEXT
+  /// TRUE/FALSE, checkbox or yes/no (e.g. lab policy signed). Stored as text "Yes"/"No".
+  BOOLEAN
+  /// Whole number without a maximum (e.g. number of absences).
+  COUNT
+  /// 0–100, compared with `threshold` (above = good, equal = warning, below = barred).
+  PERCENT
+  /// One class session: 1/0/S stored as text "Present"/"Absent"/"Sick".
+  ATTENDANCE
+  /// Free text shown as a coloured badge (Eligible / Warning / Barred).
+  STATUS
+}
+
+enum MarkStatus {
+  SCORED
+  MISSING
+  PENDING
+  EXCUSED
+  ABSENT
+}
+
+enum SyncTrigger {
+  MANUAL
+  SCHEDULED
+  CONFIG_CHANGE
+  /// Faculty opened a course page and the last sync attempt was older than the sync interval.
+  AUTO
+}
+
+enum SyncStatus {
+  RUNNING
+  SUCCEEDED
+  PARTIAL
+  VALIDATION_FAILED
+  FAILED
+}
+
+enum IssueSeverity {
+  ERROR
+  WARNING
+  INFO
+}
+
+enum SnapshotStatus {
+  ACTIVE
+  SUPERSEDED
+  WITHDRAWN
+}
+
+// ───────────────────────── Identity and access ─────────────────────────
+
+/// One row per human. May be pre-provisioned (unclaimed) when a student first appears in a
+/// roster worksheet; claimed on first Google sign-in with the same verified email.
+model Profile {
+  id            String        @id @default(uuid()) @db.Uuid
+  /// Always stored lower-case (enforced by a CHECK constraint in the migration).
+  email         String        @unique
+  emailVerified DateTime?     @map("email_verified") @db.Timestamptz(6)
+  name          String?
+  image         String?
+  /// University student ID, normalized (trimmed, no spaces). Unique when present.
+  studentId     String?       @unique @map("student_id")
+  status        ProfileStatus @default(ACTIVE)
+  claimedAt     DateTime?     @map("claimed_at") @db.Timestamptz(6)
+  lastSignInAt  DateTime?     @map("last_sign_in_at") @db.Timestamptz(6)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  accounts           Account[]
+  sessions           Session[]
+  roles              UserRole[]            @relation("RoleHolder")
+  rolesGranted       UserRole[]            @relation("RoleGrantedBy")
+  rolesRevoked       UserRole[]            @relation("RoleRevokedBy")
+  facultyAssignments CourseFaculty[]       @relation("AssignedFaculty")
+  facultyAdded       CourseFaculty[]       @relation("FacultyAddedBy")
+  enrollments        Enrollment[]
+  offeringsCreated   CourseOffering[]
+  sourcesConnected   SheetSource[]
+  syncRunsTriggered  SyncRun[]
+  snapshotsPublished PublicationSnapshot[] @relation("SnapshotPublishedBy")
+  snapshotsWithdrawn PublicationSnapshot[] @relation("SnapshotWithdrawnBy")
+  auditLogs          AuditLog[]
+
+  @@map("profiles")
+}
+
+/// OAuth account link (Auth.js). Only identity fields are stored — no OAuth tokens, because the
+/// platform never calls Google APIs on the user's behalf.
+model Account {
+  id                String   @id @default(uuid()) @db.Uuid
+  profileId         String   @map("profile_id") @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  /// One Google account per profile. Blocks Auth.js from linking a second Google account to
+  /// whoever is currently signed in (e.g. on a shared lab computer).
+  @@unique([profileId, provider])
+  @@map("accounts")
+}
+
+/// Auth.js database session. Deleting a row revokes the session immediately.
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique @map("session_token")
+  profileId    String   @map("profile_id") @db.Uuid
+  expires      DateTime @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("sessions")
+}
+
+/// Explicit role grants. A revoked row is kept (revoked_at set) so automatic domain-based
+/// provisioning never re-grants a role an administrator removed.
+model UserRole {
+  id          String    @id @default(uuid()) @db.Uuid
+  profileId   String    @map("profile_id") @db.Uuid
+  role        Role
+  grantedById String?   @map("granted_by_id") @db.Uuid
+  grantedAt   DateTime  @default(now()) @map("granted_at") @db.Timestamptz(6)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(6)
+  revokedById String?   @map("revoked_by_id") @db.Uuid
+  reason      String?
+
+  profile   Profile  @relation("RoleHolder", fields: [profileId], references: [id], onDelete: Cascade)
+  grantedBy Profile? @relation("RoleGrantedBy", fields: [grantedById], references: [id], onDelete: SetNull)
+  revokedBy Profile? @relation("RoleRevokedBy", fields: [revokedById], references: [id], onDelete: SetNull)
+
+  @@unique([profileId, role])
+  @@index([role])
+  @@map("user_roles")
+}
+
+// ─────────────────────────── Course structure ───────────────────────────
+
+model Semester {
+  id        String   @id @default(uuid()) @db.Uuid
+  season    Season
+  year      Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  offerings CourseOffering[]
+
+  @@unique([season, year])
+  @@map("semesters")
+}
+
+/// Course catalogue entry, e.g. CSE110. Code stored upper-case without spaces.
+model Course {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique
+  title     String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  offerings CourseOffering[]
+
+  @@map("courses")
+}
+
+/// A course taught in a semester section. The UUID is the stable public identifier used in
+/// student/faculty URLs; it never changes when titles, sections or spreadsheets change.
+model CourseOffering {
+  id                String            @id @default(uuid()) @db.Uuid
+  courseId          String            @map("course_id") @db.Uuid
+  semesterId        String            @map("semester_id") @db.Uuid
+  section           String
+  title             String
+  description       String?
+  status            OfferingStatus    @default(ACTIVE)
+  publicationStatus PublicationStatus @default(DRAFT) @map("publication_status")
+  /// Republish automatically after a sync completes without errors.
+  autoPublish       Boolean           @default(false) @map("auto_publish")
+  /// Include in scheduled synchronization.
+  scheduledSync     Boolean           @default(true) @map("scheduled_sync")
+  syncLeaseToken    String?           @map("sync_lease_token")
+  syncLeaseUntil    DateTime?         @map("sync_lease_until") @db.Timestamptz(6)
+  lastSyncAttemptAt DateTime?         @map("last_sync_attempt_at") @db.Timestamptz(6)
+  lastSyncSuccessAt DateTime?         @map("last_sync_success_at") @db.Timestamptz(6)
+  lastSyncStatus    SyncStatus?       @map("last_sync_status")
+  createdById       String?           @map("created_by_id") @db.Uuid
+  archivedAt        DateTime?         @map("archived_at") @db.Timestamptz(6)
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  semester  Semester @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  createdBy Profile? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  faculty     CourseFaculty[]
+  enrollments Enrollment[]
+  sheetSource SheetSource?
+  groups      AssessmentGroup[]
+  assessments Assessment[]
+  marks       Mark[]
+  syncRuns    SyncRun[]
+  snapshots   PublicationSnapshot[]
+  auditLogs   AuditLog[]
+
+  @@unique([courseId, semesterId, section])
+  @@index([semesterId])
+  @@index([status, scheduledSync])
+  @@map("course_offerings")
+}
+
+model CourseFaculty {
+  offeringId String      @map("offering_id") @db.Uuid
+  profileId  String      @map("profile_id") @db.Uuid
+  role       FacultyRole @default(INSTRUCTOR)
+  addedById  String?     @map("added_by_id") @db.Uuid
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  offering CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  profile  Profile        @relation("AssignedFaculty", fields: [profileId], references: [id], onDelete: Restrict)
+  addedBy  Profile?       @relation("FacultyAddedBy", fields: [addedById], references: [id], onDelete: SetNull)
+
+  @@id([offeringId, profileId])
+  @@index([profileId])
+  @@map("course_faculty")
+}
+
+/// Student membership in an offering, derived from the roster worksheet. Never deleted by the
+/// sync engine: students who disappear from the roster are marked REMOVED.
+/// `studentProfileId` is NULL for roster rows without an official student email ("pending
+/// access"): their marks are synced and published, but no account can see them until a later
+/// sync finds their university email and links the enrollment (matched by student ID within this
+/// offering — partial unique index on (offering_id, source_student_id) WHERE profile IS NULL).
+model Enrollment {
+  id               String           @id @default(uuid()) @db.Uuid
+  offeringId       String           @map("offering_id") @db.Uuid
+  studentProfileId String?          @map("student_profile_id") @db.Uuid
+  status           EnrollmentStatus @default(ACTIVE)
+  /// Identity values as they appeared in the sheet on the last sync (for diagnostics).
+  sourceStudentId  String?          @map("source_student_id")
+  sourceEmail      String?          @map("source_email")
+  sourceName       String?          @map("source_name")
+  sourceRow        Int?             @map("source_row")
+  removedAt        DateTime?        @map("removed_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  offering       CourseOffering  @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  student        Profile?        @relation(fields: [studentProfileId], references: [id], onDelete: Restrict)
+  marks          Mark[]
+  publishedMarks PublishedMark[]
+
+  @@unique([offeringId, studentProfileId])
+  @@index([studentProfileId, status])
+  @@map("enrollments")
+}
+
+// ──────────────────────── Google Sheets integration ────────────────────────
+
+model SheetSource {
+  id               String       @id @default(uuid()) @db.Uuid
+  offeringId       String       @unique @map("offering_id") @db.Uuid
+  spreadsheetId    String       @map("spreadsheet_id")
+  spreadsheetTitle String?      @map("spreadsheet_title")
+  status           SourceStatus @default(UNVERIFIED)
+  lastVerifiedAt   DateTime?    @map("last_verified_at") @db.Timestamptz(6)
+  lastErrorCode    String?      @map("last_error_code")
+  lastErrorMessage String?      @map("last_error_message")
+  connectedById    String?      @map("connected_by_id") @db.Uuid
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  offering    CourseOffering   @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  connectedBy Profile?         @relation(fields: [connectedById], references: [id], onDelete: SetNull)
+  worksheets  SheetWorksheet[]
+
+  @@index([spreadsheetId])
+  @@map("sheet_sources")
+}
+
+/// A worksheet (tab) identified by Google's stable numeric sheetId — never by title alone.
+model SheetWorksheet {
+  id              String   @id @default(uuid()) @db.Uuid
+  sourceId        String   @map("source_id") @db.Uuid
+  googleSheetId   Int      @map("google_sheet_id")
+  /// Title as last seen in Google Sheets (refreshed on every verification/sync).
+  title           String
+  enabled         Boolean  @default(true)
+  /// Exactly one enabled worksheet per source defines the class roster (partial unique index).
+  isRoster        Boolean  @default(false) @map("is_roster")
+  /// 1-based row number containing column headers (the first one when titles span several rows).
+  headerRow       Int      @default(1) @map("header_row")
+  /// Number of consecutive title rows combined into one header ("Quiz" over "Q1" → "Quiz › Q1").
+  headerRows      Int      @default(1) @map("header_rows")
+  /// 1-based first student row. Null = automatic: rows after the titles without a student ID or
+  /// email (e.g. a maximum-marks row) are treated as part of the header.
+  dataStartRow    Int?     @map("data_start_row")
+  studentIdHeader String?  @map("student_id_header")
+  emailHeader     String?  @map("email_header")
+  nameHeader      String?  @map("name_header")
+  /// Normalized headers seen on the last successful read; used to flag newly added columns.
+  knownHeaders    String[] @default([]) @map("known_headers")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  source  SheetSource        @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  columns AssessmentColumn[]
+
+  @@unique([sourceId, googleSheetId])
+  @@map("sheet_worksheets")
+}
+
+model AssessmentGroup {
+  id           String   @id @default(uuid()) @db.Uuid
+  offeringId   String   @map("offering_id") @db.Uuid
+  name         String
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  offering    CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  assessments Assessment[]
+
+  @@unique([offeringId, name])
+  @@map("assessment_groups")
+}
+
+/// Stable assessment definition. Marks reference this id, not a spreadsheet column.
+model Assessment {
+  id           String         @id @default(uuid()) @db.Uuid
+  offeringId   String         @map("offering_id") @db.Uuid
+  groupId      String         @map("group_id") @db.Uuid
+  name         String
+  description  String?
+  /// Maximum obtainable score (NUMERIC assessments). Values above it are rejected.
+  maxScore     Decimal?       @map("max_score") @db.Decimal(8, 2)
+  valueType    ValueType      @default(NUMERIC) @map("value_type")
+  /// PERCENT assessments: the cut-off percentage (above = good, equal = warning, below = barred).
+  threshold    Decimal?       @db.Decimal(5, 2)
+  kind         AssessmentKind @default(REGULAR)
+  displayOrder Int            @default(0) @map("display_order")
+  /// Archived assessments are no longer synchronized but keep historical marks.
+  archivedAt   DateTime?      @map("archived_at") @db.Timestamptz(6)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  offering       CourseOffering     @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  group          AssessmentGroup    @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  columns        AssessmentColumn[]
+  marks          Mark[]
+  publishedMarks PublishedMark[]
+  publishedDefs  PublishedAssessment[]
+
+  @@unique([offeringId, name])
+  @@index([groupId])
+  @@map("assessments")
+}
+
+/// Explicit source mapping: which worksheet column feeds an assessment. Matched by normalized
+/// header text each sync; `lastColumnIndex` is diagnostic (detects moved/inserted columns).
+/// An assessment with several columns is split across worksheets (a student may only have a
+/// value in one of them).
+model AssessmentColumn {
+  id               String   @id @default(uuid()) @db.Uuid
+  assessmentId     String   @map("assessment_id") @db.Uuid
+  worksheetId      String   @map("worksheet_id") @db.Uuid
+  header           String
+  normalizedHeader String   @map("normalized_header")
+  lastColumnIndex  Int?     @map("last_column_index")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  assessment Assessment     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  worksheet  SheetWorksheet @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, worksheetId])
+  @@unique([worksheetId, normalizedHeader])
+  @@map("assessment_columns")
+}
+
+model SyncRun {
+  id                 String      @id @default(uuid()) @db.Uuid
+  offeringId         String      @map("offering_id") @db.Uuid
+  trigger            SyncTrigger
+  status             SyncStatus  @default(RUNNING)
+  triggeredById      String?     @map("triggered_by_id") @db.Uuid
+  startedAt          DateTime    @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt         DateTime?   @map("finished_at") @db.Timestamptz(6)
+  durationMs         Int?        @map("duration_ms")
+  rowsRead           Int         @default(0) @map("rows_read")
+  studentsMatched    Int         @default(0) @map("students_matched")
+  enrollmentsAdded   Int         @default(0) @map("enrollments_added")
+  enrollmentsRemoved Int         @default(0) @map("enrollments_removed")
+  marksCreated       Int         @default(0) @map("marks_created")
+  marksUpdated       Int         @default(0) @map("marks_updated")
+  marksUnchanged     Int         @default(0) @map("marks_unchanged")
+  errorCount         Int         @default(0) @map("error_count")
+  warningCount       Int         @default(0) @map("warning_count")
+  /// Faculty-facing one-line summary (no secrets, no student data).
+  summary            String?
+  /// Classified failure code for FAILED runs (e.g. SHEET_NOT_SHARED, UPSTREAM_TIMEOUT).
+  errorCode          String?     @map("error_code")
+  autoPublished      Boolean     @default(false) @map("auto_published")
+
+  offering    CourseOffering        @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  triggeredBy Profile?              @relation(fields: [triggeredById], references: [id], onDelete: SetNull)
+  issues      SyncIssue[]
+  marks       Mark[]
+  snapshots   PublicationSnapshot[]
+
+  @@index([offeringId, startedAt(sort: Desc)])
+  @@index([status, startedAt(sort: Desc)])
+  @@map("sync_runs")
+}
+
+/// Structured validation / sync problems with worksheet, row and column context.
+model SyncIssue {
+  id             String        @id @default(uuid()) @db.Uuid
+  syncRunId      String        @map("sync_run_id") @db.Uuid
+  severity       IssueSeverity
+  code           String
+  worksheetTitle String?       @map("worksheet_title")
+  rowNumber      Int?          @map("row_number")
+  columnHeader   String?       @map("column_header")
+  message        String
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  syncRun SyncRun @relation(fields: [syncRunId], references: [id], onDelete: Cascade)
+
+  @@index([syncRunId, severity])
+  @@map("sync_errors")
+}
+
+// ──────────────────────── Academic results ────────────────────────
+
+/// Working copy of synchronized marks. Students never read this table directly — they read the
+/// active publication snapshot.
+model Mark {
+  id              String     @id @default(uuid()) @db.Uuid
+  offeringId      String     @map("offering_id") @db.Uuid
+  enrollmentId    String     @map("enrollment_id") @db.Uuid
+  assessmentId    String     @map("assessment_id") @db.Uuid
+  status          MarkStatus
+  score           Decimal?   @db.Decimal(8, 2)
+  textValue       String?    @map("text_value")
+  rawValue        String?    @map("raw_value")
+  sourceSyncRunId String?    @map("source_sync_run_id") @db.Uuid
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  offering   CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  enrollment Enrollment     @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  assessment Assessment     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  syncRun    SyncRun?       @relation(fields: [sourceSyncRunId], references: [id], onDelete: SetNull)
+
+  @@unique([enrollmentId, assessmentId])
+  @@index([offeringId])
+  @@index([assessmentId])
+  @@map("marks")
+}
+
+/// Immutable, versioned publication. At most one ACTIVE snapshot per offering (partial unique
+/// index in the migration).
+model PublicationSnapshot {
+  id              String         @id @default(uuid()) @db.Uuid
+  offeringId      String         @map("offering_id") @db.Uuid
+  version         Int
+  status          SnapshotStatus @default(ACTIVE)
+  note            String?
+  publishedById   String?        @map("published_by_id") @db.Uuid
+  sourceSyncRunId String?        @map("source_sync_run_id") @db.Uuid
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  withdrawnAt     DateTime?      @map("withdrawn_at") @db.Timestamptz(6)
+  withdrawnById   String?        @map("withdrawn_by_id") @db.Uuid
+
+  offering    CourseOffering        @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  publishedBy Profile?              @relation("SnapshotPublishedBy", fields: [publishedById], references: [id], onDelete: SetNull)
+  withdrawnBy Profile?              @relation("SnapshotWithdrawnBy", fields: [withdrawnById], references: [id], onDelete: SetNull)
+  syncRun     SyncRun?              @relation(fields: [sourceSyncRunId], references: [id], onDelete: SetNull)
+  assessments PublishedAssessment[]
+  marks       PublishedMark[]
+
+  @@unique([offeringId, version])
+  @@index([offeringId, status])
+  @@map("publication_snapshots")
+}
+
+/// Frozen assessment presentation inside a snapshot (later edits need a republish).
+model PublishedAssessment {
+  id           String         @id @default(uuid()) @db.Uuid
+  snapshotId   String         @map("snapshot_id") @db.Uuid
+  assessmentId String         @map("assessment_id") @db.Uuid
+  name         String
+  groupName    String         @map("group_name")
+  groupOrder   Int            @map("group_order")
+  displayOrder Int            @map("display_order")
+  maxScore     Decimal?       @map("max_score") @db.Decimal(8, 2)
+  valueType    ValueType      @map("value_type")
+  threshold    Decimal?       @db.Decimal(5, 2)
+  kind         AssessmentKind
+
+  snapshot   PublicationSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  assessment Assessment          @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+
+  @@unique([snapshotId, assessmentId])
+  @@map("published_assessments")
+}
+
+model PublishedMark {
+  id           String     @id @default(uuid()) @db.Uuid
+  snapshotId   String     @map("snapshot_id") @db.Uuid
+  enrollmentId String     @map("enrollment_id") @db.Uuid
+  assessmentId String     @map("assessment_id") @db.Uuid
+  status       MarkStatus
+  score        Decimal?   @db.Decimal(8, 2)
+  textValue    String?    @map("text_value")
+
+  snapshot   PublicationSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  enrollment Enrollment          @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
+  assessment Assessment          @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+
+  @@unique([snapshotId, enrollmentId, assessmentId])
+  @@index([enrollmentId])
+  @@map("published_marks")
+}
+
+// ──────────────────────────── Operations ────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  offeringId String?  @map("offering_id") @db.Uuid
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  actor    Profile?        @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  offering CourseOffering? @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+
+  @@index([offeringId, createdAt(sort: Desc)])
+  @@index([actorId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+/// Fixed-window request counters shared by every server instance (serverless-safe rate limiting).
+model RateLimit {
+  /// "<bucket>:<subject>", e.g. "sheets:<profileId>".
+  key         String   @id
+  windowStart DateTime @map("window_start") @db.Timestamptz(6)
+  count       Int
+
+  @@index([windowStart])
+  @@map("rate_limits")
+}

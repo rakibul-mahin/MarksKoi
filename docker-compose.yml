@@ -1,0 +1,21 @@
+# Local development / test database only. Production uses Supabase PostgreSQL.
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: syncscore
+      POSTGRES_PASSWORD: syncscore_local_only
+      POSTGRES_DB: syncscore
+    ports:
+      - "54329:5432"
+    volumes:
+      - syncscore-db:/var/lib/postgresql/data
+      - ./scripts/db/init-test-db.sql:/docker-entrypoint-initdb.d/01-init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U syncscore -d syncscore"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  syncscore-db:

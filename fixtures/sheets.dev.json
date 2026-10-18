@@ -1,0 +1,489 @@
+{
+ "1SyncScoreDevCSE110Fall2026MarksSheet_abcdefgh": {
+  "title": "CSE110 Fall 2026 \u2014 Section 01 Marks",
+  "sheets": [
+   {
+    "sheetId": 0,
+    "title": "Roster",
+    "values": [
+     [
+      "Student ID",
+      "Full Name",
+      "Email",
+      "Attendance (5)"
+     ],
+     [
+      22101001,
+      "Ayesha Rahman",
+      "ayesha.rahman@g.bracu.ac.bd",
+      4
+     ],
+     [
+      22101002,
+      "Tanvir Hasan",
+      "tanvir.hasan@g.bracu.ac.bd",
+      4
+     ],
+     [
+      22101003,
+      "Nusrat Jahan",
+      "nusrat.jahan@g.bracu.ac.bd",
+      0
+     ],
+     [
+      22101004,
+      "Rafiul Islam",
+      "rafiul.islam@g.bracu.ac.bd",
+      5
+     ],
+     [
+      22101005,
+      "Mehjabin Chowdhury",
+      "mehjabin.chowdhury@g.bracu.ac.bd",
+      3
+     ],
+     [
+      22101006,
+      "Sabbir Ahmed",
+      "sabbir.ahmed@g.bracu.ac.bd",
+      3
+     ],
+     [
+      22101007,
+      "Farzana Akter",
+      "farzana.akter@g.bracu.ac.bd",
+      3
+     ],
+     [
+      22101008,
+      "Imran Hossain",
+      "imran.hossain@g.bracu.ac.bd",
+      3
+     ],
+     [
+      22101009,
+      "Tasnim Sultana",
+      "tasnim.sultana@g.bracu.ac.bd",
+      5
+     ],
+     [
+      22101010,
+      "Arif Mahmud",
+      "arif.mahmud@g.bracu.ac.bd",
+      5
+     ],
+     [
+      22101011,
+      "Sumaiya Karim",
+      "sumaiya.karim@g.bracu.ac.bd",
+      4
+     ],
+     [
+      22101012,
+      "Nafis Iqbal",
+      "nafis.iqbal@g.bracu.ac.bd",
+      null
+     ]
+    ]
+   },
+   {
+    "sheetId": 1101,
+    "title": "Quizzes",
+    "values": [
+     [
+      "Student ID",
+      "Quiz 1 (10)",
+      "Quiz 2 (10)",
+      "Quiz 3 (10)"
+     ],
+     [
+      22101001,
+      7,
+      9,
+      null
+     ],
+     [
+      22101002,
+      5,
+      7,
+      10
+     ],
+     [
+      22101003,
+      7.5,
+      6,
+      6
+     ],
+     [
+      22101004,
+      5,
+      9,
+      null
+     ],
+     [
+      22101005,
+      8,
+      "ex",
+      7
+     ],
+     [
+      22101006,
+      6,
+      7,
+      "pending"
+     ],
+     [
+      22101007,
+      7.5,
+      9,
+      null
+     ],
+     [
+      22101008,
+      8.5,
+      0,
+      9
+     ],
+     [
+      22101009,
+      8,
+      9,
+      10
+     ],
+     [
+      22101010,
+      9,
+      7,
+      null
+     ],
+     [
+      22101011,
+      5,
+      6,
+      9
+     ],
+     [
+      22101012,
+      10,
+      9,
+      8
+     ]
+    ]
+   },
+   {
+    "sheetId": 1102,
+    "title": "Assignments",
+    "values": [
+     [
+      "Student ID",
+      "Assignment 1 (20)",
+      "Assignment 2 (20)"
+     ],
+     [
+      22101001,
+      19,
+      12
+     ],
+     [
+      22101002,
+      14,
+      12
+     ],
+     [
+      22101003,
+      18,
+      20
+     ],
+     [
+      22101004,
+      14,
+      null
+     ],
+     [
+      22101005,
+      17,
+      15
+     ],
+     [
+      22101006,
+      16,
+      12
+     ],
+     [
+      22101007,
+      19,
+      20
+     ],
+     [
+      22101008,
+      16,
+      15
+     ],
+     [
+      22101009,
+      16,
+      20
+     ],
+     [
+      22101010,
+      20,
+      null
+     ],
+     [
+      22101011,
+      20,
+      18
+     ],
+     [
+      22101012,
+      14,
+      12
+     ]
+    ]
+   },
+   {
+    "sheetId": 1103,
+    "title": "Midterm",
+    "values": [
+     [
+      "CSE110 Midterm \u2014 Fall 2026"
+     ],
+     [
+      "Student ID",
+      "Midterm (30)",
+      "Remarks"
+     ],
+     [
+      22101001,
+      20,
+      ""
+     ],
+     [
+      22101002,
+      27,
+      ""
+     ],
+     [
+      22101003,
+      18,
+      ""
+     ],
+     [
+      22101004,
+      23,
+      ""
+     ],
+     [
+      22101005,
+      20,
+      ""
+     ],
+     [
+      22101006,
+      20,
+      ""
+     ],
+     [
+      22101007,
+      26,
+      ""
+     ],
+     [
+      22101008,
+      21.5,
+      ""
+     ],
+     [
+      22101009,
+      25,
+      ""
+     ],
+     [
+      22101010,
+      26,
+      ""
+     ],
+     [
+      22101011,
+      "AB",
+      ""
+     ],
+     [
+      22101012,
+      25,
+      ""
+     ]
+    ]
+   },
+   {
+    "sheetId": 1104,
+    "title": "Lab Group A",
+    "values": [
+     [
+      "Student ID",
+      "Lab 1 (10)"
+     ],
+     [
+      22101001,
+      7
+     ],
+     [
+      22101003,
+      7
+     ],
+     [
+      22101005,
+      9
+     ],
+     [
+      22101007,
+      10
+     ],
+     [
+      22101009,
+      7
+     ],
+     [
+      22101011,
+      9
+     ]
+    ]
+   },
+   {
+    "sheetId": 1105,
+    "title": "Lab Group B",
+    "values": [
+     [
+      "Student ID",
+      "Lab 1 (10)"
+     ],
+     [
+      22101002,
+      10
+     ],
+     [
+      22101004,
+      7
+     ],
+     [
+      22101006,
+      7
+     ],
+     [
+      22101008,
+      8
+     ],
+     [
+      22101010,
+      8
+     ],
+     [
+      22101012,
+      10
+     ]
+    ]
+   }
+  ]
+ },
+ "1SyncScoreDevMAT110Fall2026MarksSheet_ijklmnop": {
+  "title": "MAT110 Fall 2026 \u2014 Section 03",
+  "sheets": [
+   {
+    "sheetId": 0,
+    "title": "Marks",
+    "values": [
+     [
+      "Email",
+      "Name",
+      "Class Test 1 (15)",
+      "Class Test 2 (15)",
+      "Final Grade"
+     ],
+     [
+      "ayesha.rahman@g.bracu.ac.bd",
+      "Ayesha Rahman",
+      14,
+      8,
+      "A"
+     ],
+     [
+      "tanvir.hasan@g.bracu.ac.bd",
+      "Tanvir Hasan",
+      14,
+      12,
+      "B"
+     ],
+     [
+      "nusrat.jahan@g.bracu.ac.bd",
+      "Nusrat Jahan",
+      11,
+      14,
+      "B+"
+     ],
+     [
+      "rafiul.islam@g.bracu.ac.bd",
+      "Rafiul Islam",
+      9,
+      null,
+      "B"
+     ],
+     [
+      "mehjabin.chowdhury@g.bracu.ac.bd",
+      "Mehjabin Chowdhury",
+      11,
+      10,
+      "A"
+     ],
+     [
+      "sabbir.ahmed@g.bracu.ac.bd",
+      "Sabbir Ahmed",
+      12,
+      8,
+      "A-"
+     ],
+     [
+      "farzana.akter@g.bracu.ac.bd",
+      "Farzana Akter",
+      15,
+      12,
+      "A-"
+     ]
+    ]
+   }
+  ]
+ },
+ "1SyncScoreDevNewCourseUnconfiguredSheet_qrstuv": {
+  "title": "PHY111 Fall 2026 \u2014 Section 02",
+  "sheets": [
+   {
+    "sheetId": 0,
+    "title": "Class list",
+    "values": [
+     [
+      "ID",
+      "Name",
+      "E-mail",
+      "Quiz 1"
+     ],
+     [
+      22101001,
+      "Ayesha Rahman",
+      "ayesha.rahman@g.bracu.ac.bd",
+      7
+     ],
+     [
+      22101004,
+      "Rafiul Islam",
+      "rafiul.islam@g.bracu.ac.bd",
+      9
+     ]
+    ]
+   }
+  ]
+ },
+ "1SyncScoreDevPrivateSheetNotSharedWithUs_wxyz": {
+  "title": "Not shared",
+  "shared": false,
+  "sheets": []
+ }
+}

@@ -1,0 +1,18 @@
+# Fallback scheduler: use this if Netlify Scheduled Functions are unavailable on your plan.
+# Requires repository secrets SYNCSCORE_URL (e.g. https://your-site.netlify.app) and CRON_SECRET.
+name: Scheduled sync (fallback)
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    if: ${{ vars.ENABLE_GITHUB_CRON == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger SyncScore scheduled sync
+        run: |
+          curl --fail-with-body -sS -X POST "${{ secrets.SYNCSCORE_URL }}/api/cron/sync" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 60

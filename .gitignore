@@ -1,0 +1,86 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# allow the documented example env file (contains placeholders only)
+!.env.example
+
+# local-only internal project notes (never committed)
+.claude-work/
+
+# local credentials and secrets
+*.key
+*.p12
+service-account*.json
+google-credentials*.json
+/secrets/
+/.local/
+
+# generated prisma client
+/src/generated/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/e2e/.auth/
+/e2e/.runtime/
+
+# netlify
+.netlify
+/.next-e2e/
+/.next-build/
+
+# AI assistant / coding-agent files (local only, never committed)
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.claude/
+.cursor/
+.cursorrules
+.aider*
+
+# logs, editor and OS junk
+*.log
+.vscode/
+.idea/
+Thumbs.db
