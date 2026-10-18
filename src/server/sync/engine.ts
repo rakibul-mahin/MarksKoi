@@ -329,14 +329,14 @@ export async function runSync(
 
 function sheetsFailureSummary(err: SheetsError): string {
   const base: Record<string, string> = {
-    NOT_SHARED: "SyncScore can no longer open the spreadsheet. Check that it is still shared with the service account.",
+    NOT_SHARED: "MarksKoi can no longer open the spreadsheet. Check that it is still shared with the service account.",
     NOT_FOUND: "The spreadsheet could not be found. It may have been deleted or moved.",
     UNSUPPORTED_DOCUMENT: "The connected file isn't a Google Sheets spreadsheet.",
     RATE_LIMITED: "Google is temporarily limiting requests.",
     UNAVAILABLE: "Google Sheets was temporarily unavailable.",
     TIMEOUT: "Google Sheets didn't respond in time.",
-    AUTH_FAILED: "SyncScore's Google credentials were rejected.",
-    API_DISABLED: "The Google Sheets API is disabled for SyncScore's project.",
+    AUTH_FAILED: "MarksKoi's Google credentials were rejected.",
+    API_DISABLED: "The Google Sheets API is disabled for MarksKoi's project.",
     CONFIG: "Google Sheets access isn't configured on the server.",
     INVALID_REQUEST: "Google Sheets rejected the request.",
   };

@@ -10,7 +10,7 @@ export type RateLimitRule = { bucket: string; limit: number; windowSeconds: numb
 
 export const RATE_LIMITS = {
   /** Anything that calls the Google Sheets API on a faculty member's behalf (shared quota). */
-  sheets: { bucket: "sheets", limit: 30, windowSeconds: 60, message: "You're doing that too quickly. Google limits how often SyncScore can read spreadsheets, so please wait a minute and try again." },
+  sheets: { bucket: "sheets", limit: 30, windowSeconds: 60, message: "You're doing that too quickly. Google limits how often MarksKoi can read spreadsheets, so please wait a minute and try again." },
   /** Manual syncs of one course, whoever triggers them. */
   courseSync: { bucket: "course-sync", limit: 6, windowSeconds: 60, message: "This course was synced several times in the last minute. Please wait a moment before syncing again." },
   /** Course creation per faculty member. */

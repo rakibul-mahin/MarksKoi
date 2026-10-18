@@ -40,7 +40,7 @@ export function resolveIdentities(roster: Array<RosterStudent & { email: string 
           code: "IDENTITY_CONFLICT",
           structural: true,
           ...ctx,
-          message: `Row ${s.row}: student ID ${s.studentId} already belongs to a different SyncScore account than ${s.email}. An administrator must resolve this before marks can sync.`,
+          message: `Row ${s.row}: student ID ${s.studentId} already belongs to a different MarksKoi account than ${s.email}. An administrator must resolve this before marks can sync.`,
         });
         continue;
       }

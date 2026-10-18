@@ -52,7 +52,7 @@ export default async function FacultyOverview() {
             </Button>
           }
         >
-          It takes about five minutes: create the course, share your marks spreadsheet with SyncScore, choose which columns students should see, then publish when you&apos;re ready.
+          It takes about five minutes: create the course, share your marks spreadsheet with MarksKoi, choose which columns students should see, then publish when you&apos;re ready.
         </EmptyState>
       ) : (
         <div className="space-y-10">
@@ -137,7 +137,7 @@ export default async function FacultyOverview() {
                   {recent.map((r) => (
                     <li key={r.id} className="text-sm">
                       <p>
-                        <span className="font-medium">{r.actor?.name ?? r.actor?.email ?? "SyncScore"}</span> {describeAuditAction(r.action)}
+                        <span className="font-medium">{r.actor?.name ?? r.actor?.email ?? "MarksKoi"}</span> {describeAuditAction(r.action)}
                         {r.offering && (
                           <span className="text-muted-foreground">
                             {" "}

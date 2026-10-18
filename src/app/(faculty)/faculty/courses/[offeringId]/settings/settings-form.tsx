@@ -54,7 +54,7 @@ export function SettingsForm({ offeringId, editable, defaults }: { offeringId: s
         </div>
         {(
           [
-            ["scheduledSync", "Sync automatically", "SyncScore checks your sheet every 15 minutes in the background. Turn off if you only want to sync by hand or when you open the course."],
+            ["scheduledSync", "Sync automatically", "MarksKoi checks your sheet every 15 minutes in the background. Turn off if you only want to sync by hand or when you open the course."],
             ["autoPublish", "Republish automatically after clean syncs", "When a sync finds no problems, students see the updated marks for already-published assessments without you clicking Publish. Syncs with problems are never published automatically."],
           ] as const
         ).map(([name, label, help]) => (

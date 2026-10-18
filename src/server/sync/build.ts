@@ -140,7 +140,7 @@ export function resolveWorksheets(config: SyncConfig, meta: SpreadsheetMeta): { 
         severity: "INFO",
         code: "WORKSHEET_RENAMED",
         worksheetTitle: live.title,
-        message: `Worksheet "${ws.title}" was renamed to "${live.title}". SyncScore followed the rename automatically.`,
+        message: `Worksheet "${ws.title}" was renamed to "${live.title}". MarksKoi followed the rename automatically.`,
       });
     }
     resolved.push({ config: ws, currentTitle: live.title });
@@ -212,7 +212,7 @@ function locate(
       structural: true,
       worksheetTitle: ws.currentTitle,
       columnHeader: wanted,
-      message: `"${wanted}" appears in ${idx.length} columns (${idx.map(columnLetter).join(", ")}) of "${ws.currentTitle}". Rename one so SyncScore knows which to use.`,
+      message: `"${wanted}" appears in ${idx.length} columns (${idx.map(columnLetter).join(", ")}) of "${ws.currentTitle}". Rename one so MarksKoi knows which to use.`,
     });
     return null;
   }
@@ -339,7 +339,7 @@ export function buildSnapshot(
           structural: true,
           worksheetTitle: p.ws.currentTitle,
           columnHeader: c.header,
-          message: `Column "${c.header}" (assessment "${a.name}") was not found in "${p.ws.currentTitle}". If it was renamed, update the mapping so SyncScore doesn't guess.`,
+          message: `Column "${c.header}" (assessment "${a.name}") was not found in "${p.ws.currentTitle}". If it was renamed, update the mapping so MarksKoi doesn't guess.`,
         });
         continue;
       }
@@ -350,7 +350,7 @@ export function buildSnapshot(
           structural: true,
           worksheetTitle: p.ws.currentTitle,
           columnHeader: c.header,
-          message: `"${c.header}" appears in ${idx.length} columns (${idx.map(columnLetter).join(", ")}) of "${p.ws.currentTitle}". Rename one so SyncScore knows which to use.`,
+          message: `"${c.header}" appears in ${idx.length} columns (${idx.map(columnLetter).join(", ")}) of "${p.ws.currentTitle}". Rename one so MarksKoi knows which to use.`,
         });
         continue;
       }
@@ -360,7 +360,7 @@ export function buildSnapshot(
           code: "COLUMN_MOVED",
           worksheetTitle: p.ws.currentTitle,
           columnHeader: c.header,
-          message: `Column "${c.header}" moved from ${columnLetter(c.lastColumnIndex)} to ${columnLetter(idx[0])}. SyncScore followed it by its header.`,
+          message: `Column "${c.header}" moved from ${columnLetter(c.lastColumnIndex)} to ${columnLetter(idx[0])}. MarksKoi followed it by its header.`,
         });
       }
       columnIndex.set(c.id, idx[0]);
@@ -481,7 +481,7 @@ export function buildSnapshot(
         code: "NO_PORTAL_EMAIL",
         ...ctx,
         columnHeader: rosterWs.config.emailHeader ?? undefined,
-        message: `Row ${rowNumber} (${name ?? `ID ${studentId}`}) ${missingEmailReason}. Their marks are synced, but they can't view them in SyncScore until their official ${config.studentDomains.map((d) => "@" + d).join(" / ")} email is added to the sheet.`,
+        message: `Row ${rowNumber} (${name ?? `ID ${studentId}`}) ${missingEmailReason}. Their marks are synced, but they can't view them in MarksKoi until their official ${config.studentDomains.map((d) => "@" + d).join(" / ")} email is added to the sheet.`,
       });
     }
     const student: RosterStudent = { key: email ?? `id:${studentId}`, email, studentId, name, row: rowNumber };

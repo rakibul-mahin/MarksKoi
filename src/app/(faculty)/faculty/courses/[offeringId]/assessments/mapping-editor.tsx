@@ -630,7 +630,7 @@ export function MappingEditor({
             <AlertDialogTitle>Check these before saving</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-2 text-sm">
-                <p>SyncScore found columns that might belong together. Decide explicitly so marks aren&apos;t missed:</p>
+                <p>MarksKoi found columns that might belong together. Decide explicitly so marks aren&apos;t missed:</p>
                 <ul className="list-disc space-y-1 pl-5">
                   {warnings?.map((w, i) => <li key={i}>{w}</li>)}
                 </ul>

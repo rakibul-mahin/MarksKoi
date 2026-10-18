@@ -1,6 +1,6 @@
-# SyncScore
+# MarksKoi
 
-Course marks for BRAC University. Instructors keep marks in Google Sheets; SyncScore syncs them
+Course marks for BRAC University. Instructors keep marks in Google Sheets; MarksKoi syncs them
 into PostgreSQL, instructors review and **publish** versioned results, and each student sees only
 their own published marks.
 
@@ -22,7 +22,7 @@ Students ◀── only their own rows ◀── active publication snapshot (ve
 - Syncing never changes what students see; publishing does. A failed or invalid sync keeps the
   last valid data.
 - Worksheets are tracked by Google's stable `sheetId`; columns by header text. Renamed or
-  ambiguous columns are flagged for review. SyncScore never guesses.
+  ambiguous columns are flagged for review. MarksKoi never guesses.
 - Blank cells are "not entered", never zero. `pending`, `excused`, `absent` are distinct states.
   Invalid values are reported with worksheet, row and column, and never imported.
 - One sync per course at a time (database lease with fencing); writes are transactional and

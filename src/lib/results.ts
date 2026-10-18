@@ -33,7 +33,7 @@ export type CourseResultsView = {
   /** null when nothing is published. */
   publication: { version: number; publishedAt: string } | null;
   groups: ResultGroup[];
-  /** Faculty-defined official values (never computed by SyncScore). */
+  /** Faculty-defined official values (never computed by MarksKoi). */
   official: ResultItem[];
   /** The latest sync failed after this publication; newer updates may be delayed. */
   updatesDelayed: boolean;

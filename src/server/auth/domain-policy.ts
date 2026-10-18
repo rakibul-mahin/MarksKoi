@@ -54,7 +54,7 @@ export const SIGN_IN_DENIAL_MESSAGES: Record<string, string> = {
   DOMAIN_AMBIGUOUS: "Your email domain is configured for more than one role. An administrator needs to fix the configuration.",
   SUSPENDED: "Your account has been suspended. Contact an administrator.",
   EMAIL_CONFLICT: "Your email address is already linked to a different account. Contact an administrator.",
-  NO_ROLE: "Your account doesn't have access to SyncScore yet. Contact an administrator.",
+  NO_ROLE: "Your account doesn't have access to MarksKoi yet. Contact an administrator.",
   GOOGLE_ACCOUNT_CHANGED: "This email was previously used with a different Google account. An administrator needs to reset the link before you can sign in.",
   SIGNED_IN_AS_OTHER: "Someone else is signed in on this browser. Sign out first, then sign in with your own account.",
   UNAVAILABLE: "Sign-in is temporarily unavailable. Please try again in a few minutes.",

@@ -30,7 +30,7 @@ export default async function StudentDashboard() {
 
       {courses.length === 0 ? (
         <EmptyState icon={BookOpenCheck} title="No courses yet">
-          A course appears here once your instructor connects their class list to SyncScore and it includes <span className="tabular text-foreground">{viewer.email}</span>. If a course is missing after the first week, ask your instructor to check that your email is in their sheet.
+          A course appears here once your instructor connects their class list to MarksKoi and it includes <span className="tabular text-foreground">{viewer.email}</span>. If a course is missing after the first week, ask your instructor to check that your email is in their sheet.
         </EmptyState>
       ) : (
         [...bySemester.entries()].map(([semester, list], i) => (

@@ -37,7 +37,7 @@ export function ConnectionPanel({
             <FileSpreadsheet className="size-4 text-primary" aria-hidden="true" />
             Google spreadsheet
           </h2>
-          <p className="text-sm text-muted-foreground">SyncScore reads your sheet with view-only access. It never edits it.</p>
+          <p className="text-sm text-muted-foreground">MarksKoi reads your sheet with view-only access. It never edits it.</p>
         </div>
         {source && (source.status === "CONNECTED" && !liveError ? <StatusPill tone="success" icon={CheckCircle2}>Connected</StatusPill> : <StatusPill tone="danger" icon={TriangleAlert}>Can&apos;t read the sheet</StatusPill>)}
       </div>
@@ -59,7 +59,7 @@ export function ConnectionPanel({
                   size="sm"
                   variant="outline"
                   pendingLabel="Checking…"
-                  successMessage="Connection verified. SyncScore can read the spreadsheet."
+                  successMessage="Connection verified. MarksKoi can read the spreadsheet."
                 >
                   <ShieldCheck aria-hidden="true" />
                   Verify connection
@@ -103,7 +103,7 @@ function ShareInstructions({ serviceAccountEmail }: { serviceAccountEmail: strin
   return (
     <ol className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
       <li className="rounded-lg bg-muted/60 p-4">
-        <p className="font-medium">Share your sheet with SyncScore</p>
+        <p className="font-medium">Share your sheet with MarksKoi</p>
         <p className="mt-1 text-muted-foreground">
           In Google Sheets, click <strong className="font-medium text-foreground">Share</strong>, add this address as a <strong className="font-medium text-foreground">Viewer</strong>, and turn off “Notify people”.
         </p>
@@ -118,7 +118,7 @@ function ShareInstructions({ serviceAccountEmail }: { serviceAccountEmail: strin
       </li>
       <li className="rounded-lg bg-muted/60 p-4">
         <p className="font-medium">Paste the link here</p>
-        <p className="mt-1 text-muted-foreground">Copy the address from your browser while the sheet is open. SyncScore checks that it can read it before saving.</p>
+        <p className="mt-1 text-muted-foreground">Copy the address from your browser while the sheet is open. MarksKoi checks that it can read it before saving.</p>
       </li>
     </ol>
   );

@@ -1,4 +1,4 @@
-// SyncScore data model.
+// MarksKoi data model.
 // Conventions: UUID primary keys, snake_case tables/columns, timestamps in UTC (timestamptz).
 // Academic records are never hard-deleted by application code: offerings are archived and
 // enrollments are marked REMOVED so historical marks and published snapshots stay intact.

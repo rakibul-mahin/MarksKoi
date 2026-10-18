@@ -61,7 +61,7 @@ export default async function AuditLogPage(props: PageProps<"/admin/audit-logs">
             {logs.map((l) => (
               <tr key={l.id} className="border-b border-rule align-top last:border-0">
                 <td className="tabular whitespace-nowrap px-5 py-3 text-xs">{formatDateTime(l.createdAt)}</td>
-                <td className="px-5 py-3">{l.actor?.email ?? <span className="text-muted-foreground">SyncScore</span>}</td>
+                <td className="px-5 py-3">{l.actor?.email ?? <span className="text-muted-foreground">MarksKoi</span>}</td>
                 <td className="px-5 py-3">
                   {describeAuditAction(l.action)}
                   <span className="tabular block text-xs text-muted-foreground">{l.action}</span>

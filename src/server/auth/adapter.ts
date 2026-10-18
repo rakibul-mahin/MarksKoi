@@ -4,7 +4,7 @@ import { normalizeEmail } from "@/lib/normalize";
 import type { Db } from "../db";
 
 /**
- * Auth.js adapter over SyncScore's own tables (profiles / accounts / sessions).
+ * Auth.js adapter over MarksKoi's own tables (profiles / accounts / sessions).
  * - Emails are canonicalized to lower case.
  * - OAuth tokens are never stored: the platform only needs the user's identity.
  */

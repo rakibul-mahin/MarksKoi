@@ -8,7 +8,7 @@ import { GoogleSubmitButton } from "./google-button";
 export const metadata: Metadata = { title: "Sign in" };
 
 const AUTH_ERRORS: Record<string, string> = {
-  OAuthAccountNotLinked: "That Google account can't be linked to your SyncScore profile. Contact an administrator.",
+  OAuthAccountNotLinked: "That Google account can't be linked to your MarksKoi profile. Contact an administrator.",
   AccessDenied: "Access was denied. Use your university Google account.",
   Configuration: "Sign-in isn't configured correctly on this server. Please contact an administrator.",
   Verification: "The sign-in link is no longer valid. Please try again.",
@@ -56,7 +56,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
           <GoogleSubmitButton />
         </form>
         <p className="mt-6 text-xs text-muted-foreground">
-          SyncScore only reads your name, email address and profile photo from Google. It never accesses your Drive, Gmail or other data.
+          MarksKoi only reads your name, email address and profile photo from Google. It never accesses your Drive, Gmail or other data.
         </p>
       </div>
     </div>

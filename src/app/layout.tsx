@@ -9,8 +9,8 @@ const body = Hanken_Grotesk({ variable: "--font-body", subsets: ["latin"], displ
 const data = IBM_Plex_Mono({ variable: "--font-data", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "SyncScore", template: "%s · SyncScore" },
-  description: "Your course marks, straight from your instructor's gradebook.",
+  title: { default: "MarksKoi?", template: "%s · MarksKoi?" },
+  description: "Marks koi? Ekhanei! Your course marks, straight from your instructor's gradebook.",
   robots: { index: false, follow: false },
 };
 

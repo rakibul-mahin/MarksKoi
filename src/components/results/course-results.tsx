@@ -69,7 +69,7 @@ export function CourseResults({ view, preview }: { view: CourseResultsView; prev
                   <ResultRow key={item.assessmentId} item={item} index={row++} large />
                 ))}
               </ul>
-              <p className="mt-3 text-xs text-muted-foreground">Provided by your instructor. SyncScore never calculates totals or grades.</p>
+              <p className="mt-3 text-xs text-muted-foreground">Provided by your instructor. MarksKoi never calculates totals or grades.</p>
             </section>
           )}
 

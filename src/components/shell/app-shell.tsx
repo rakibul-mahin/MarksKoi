@@ -23,7 +23,7 @@ export function SidebarShell({ area, viewer, children }: { area: Exclude<NavArea
     <div className="min-h-dvh lg:grid lg:grid-cols-[15.5rem_1fr]">
       <aside className="hidden border-r border-sidebar-border bg-sidebar lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col">
         <div className="px-5 pb-4 pt-5">
-          <Link href={AREA_HOME[area]} className="rounded-md" aria-label="SyncScore home">
+          <Link href={AREA_HOME[area]} className="rounded-md" aria-label="MarksKoi? home">
             <Logo />
           </Link>
           <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{AREA_LABEL[area]}</p>
@@ -45,7 +45,7 @@ export function SidebarShell({ area, viewer, children }: { area: Exclude<NavArea
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/85 px-3 backdrop-blur lg:hidden">
           <div className="flex items-center gap-1">
             <MobileNav items={items} areaLabel={AREA_LABEL[area]} />
-            <Link href={AREA_HOME[area]} aria-label="SyncScore home">
+            <Link href={AREA_HOME[area]} aria-label="MarksKoi? home">
               <Logo />
             </Link>
           </div>
@@ -66,7 +66,7 @@ export function TopBarShell({ viewer, children }: { viewer: CurrentViewer; child
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/student" aria-label="SyncScore home" className="rounded-md">
+          <Link href="/student" aria-label="MarksKoi? home" className="rounded-md">
             <Logo />
           </Link>
           <nav aria-label="Student navigation" className="hidden sm:block">

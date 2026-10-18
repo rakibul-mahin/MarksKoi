@@ -55,7 +55,7 @@ export function PreviewPanel({ result }: { result: PreviewResult }) {
             {p.structuralErrors ? <CircleAlert className="mt-0.5 size-4 shrink-0" /> : errors ? <TriangleAlert className="mt-0.5 size-4 shrink-0" /> : <CheckCircle2 className="mt-0.5 size-4 shrink-0" />}
             {p.structuralErrors
               ? "This configuration can't be synced yet. See the problems below."
-              : `Found ${p.studentCount} students across ${p.rowsRead} rows.${errors ? ` ${errors} rows or cells need attention; they'll keep their previous values.` : " Everything can be synced."}${noPortal ? ` ${noPortal} ${noPortal === 1 ? "student has" : "students have"} no official email, so they can't view marks in SyncScore yet.` : ""}`}
+              : `Found ${p.studentCount} students across ${p.rowsRead} rows.${errors ? ` ${errors} rows or cells need attention; they'll keep their previous values.` : " Everything can be synced."}${noPortal ? ` ${noPortal} ${noPortal === 1 ? "student has" : "students have"} no official email, so they can't view marks in MarksKoi yet.` : ""}`}
           </p>
           {p.issues.length > 0 && <IssueList issues={p.issues} total={p.issueCount} />}
           {p.rows.length > 0 && (
@@ -81,7 +81,7 @@ export function PreviewPanel({ result }: { result: PreviewResult }) {
                         <span className="block truncate">{r.name ?? r.email ?? `ID ${r.studentId}`}</span>
                         <span className="tabular block truncate text-xs text-muted-foreground">{r.studentId ?? r.email}</span>
                         {!r.portalAccess && (
-                          <span className="mt-0.5 inline-block rounded-full bg-warning-soft px-1.5 text-[0.7rem] text-warning" title="No official student email in the sheet. Their marks are synced, but they can't view them in SyncScore yet.">
+                          <span className="mt-0.5 inline-block rounded-full bg-warning-soft px-1.5 text-[0.7rem] text-warning" title="No official student email in the sheet. Their marks are synced, but they can't view them in MarksKoi yet.">
                             No portal access
                           </span>
                         )}

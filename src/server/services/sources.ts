@@ -61,7 +61,7 @@ export async function connectSpreadsheet(viewer: Viewer, offeringId: unknown, ra
   }
   const meta = await sheetsCall(() => getSheetsClient().getSpreadsheet(spreadsheetId));
   const sheets = gridWorksheets(meta);
-  if (sheets.length === 0) throw new AppError("VALIDATION", "This spreadsheet has no worksheets SyncScore can read.");
+  if (sheets.length === 0) throw new AppError("VALIDATION", "This spreadsheet has no worksheets MarksKoi can read.");
 
   await db.$transaction(async (tx) => {
     const existing = await tx.sheetSource.findUnique({ where: { offeringId: offering.id } });

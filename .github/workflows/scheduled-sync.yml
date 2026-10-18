@@ -12,7 +12,7 @@ jobs:
     if: ${{ vars.ENABLE_GITHUB_CRON == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger SyncScore scheduled sync
+      - name: Trigger MarksKoi scheduled sync
         run: |
           curl --fail-with-body -sS -X POST "${{ secrets.SYNCSCORE_URL }}/api/cron/sync" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 60

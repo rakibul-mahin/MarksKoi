@@ -29,9 +29,9 @@ export default async function CourseOverview(props: PageProps<"/faculty/courses/
   const base = `/faculty/courses/${offering.id}`;
   const studentLink = `${getAppUrl()}/courses/${offering.id}`;
   const steps = [
-    { done: !!offering.sheetSource, title: "Connect your spreadsheet", body: "Share your marks sheet with SyncScore and paste its link.", href: `${base}/assessments`, cta: "Connect" },
+    { done: !!offering.sheetSource, title: "Connect your spreadsheet", body: "Share your marks sheet with MarksKoi and paste its link.", href: `${base}/assessments`, cta: "Connect" },
     { done: assessmentCount > 0, title: "Choose the columns students see", body: "Pick the class list and the assessment columns.", href: `${base}/assessments`, cta: "Choose columns" },
-    { done: !!offering.lastSyncSuccessAt, title: "Sync marks", body: "Copy the latest marks into SyncScore. Nothing is visible to students yet.", href: `${base}/sync`, cta: "Open sync" },
+    { done: !!offering.lastSyncSuccessAt, title: "Sync marks", body: "Copy the latest marks into MarksKoi. Nothing is visible to students yet.", href: `${base}/sync`, cta: "Open sync" },
     { done: !!activeSnapshot, title: "Publish", body: "Preview exactly what students will see, then publish.", href: `${base}/publish`, cta: "Review & publish" },
   ];
   const nextStep = steps.findIndex((s) => !s.done);

@@ -41,7 +41,7 @@ export default async function SyncPage(props: PageProps<"/faculty/courses/[offer
           </p>
           <p className="text-muted-foreground">
             {offering.scheduledSync
-              ? `SyncScore syncs automatically every ${intervalMinutes} minutes, and whenever you open this course if the last sync is older than that.`
+              ? `MarksKoi syncs automatically every ${intervalMinutes} minutes, and whenever you open this course if the last sync is older than that.`
               : "Scheduled syncing is off for this course (see Settings); opening the course still syncs if it's been a while."}{" "}
             Use Sync now for an immediate update. Syncing changes what students see only if auto-publish is on. Otherwise, students see changes when you publish.
           </p>
@@ -53,7 +53,7 @@ export default async function SyncPage(props: PageProps<"/faculty/courses/[offer
         <SectionHeading title={<span id="runs-heading">History</span>} description={`${total} ${total === 1 ? "sync" : "syncs"}`} />
         {runs.length === 0 ? (
           <EmptyState icon={History} title="No syncs yet">
-            Once you save your column choices, SyncScore syncs automatically and each run is listed here with any problems it found.
+            Once you save your column choices, MarksKoi syncs automatically and each run is listed here with any problems it found.
           </EmptyState>
         ) : (
           <ul className="divide-y divide-rule overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">

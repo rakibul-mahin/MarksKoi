@@ -65,18 +65,18 @@ export class SheetsError extends Error {
 
 /** Faculty-facing explanations with a suggested fix. */
 export function describeSheetsError(code: SheetsErrorCode, serviceAccountEmail: string | null): string {
-  const sa = serviceAccountEmail ?? "the SyncScore service account";
+  const sa = serviceAccountEmail ?? "the MarksKoi service account";
   switch (code) {
     case "NOT_SHARED":
-      return `SyncScore can't open this spreadsheet. Share it with ${sa} (Viewer access is enough) and try again.`;
+      return `MarksKoi can't open this spreadsheet. Share it with ${sa} (Viewer access is enough) and try again.`;
     case "NOT_FOUND":
       return "We couldn't find a spreadsheet with that link. Check that the URL is correct and the file hasn't been deleted.";
     case "UNSUPPORTED_DOCUMENT":
       return "This file isn't a Google Sheets spreadsheet (for example, an uploaded Excel file). Open it in Google Sheets and use File → Save as Google Sheets, then use the new link.";
     case "API_DISABLED":
-      return "The Google Sheets API isn't enabled for SyncScore's Google Cloud project. An administrator needs to enable it.";
+      return "The Google Sheets API isn't enabled for MarksKoi's Google Cloud project. An administrator needs to enable it.";
     case "AUTH_FAILED":
-      return "SyncScore's Google credentials were rejected. An administrator needs to check the service-account configuration.";
+      return "MarksKoi's Google credentials were rejected. An administrator needs to check the service-account configuration.";
     case "RATE_LIMITED":
       return "Google is temporarily limiting requests. Please wait a minute and try again.";
     case "UNAVAILABLE":
